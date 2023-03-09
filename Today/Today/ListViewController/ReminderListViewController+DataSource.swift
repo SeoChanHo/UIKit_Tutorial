@@ -19,12 +19,13 @@ extension ReminderListViewController {
         NSLocalizedString("Not Completed", comment: "Reminder not completed value")
     }
     
-    func updateSnapshot(reloading ids: [Reminder.ID] = []) {
+    func updateSnapshot(reloading idsThatChanged: [Reminder.ID] = []) {
+        let ids = idsThatChanged.filter { id in filteredReminders.contains(where: { $0.id == id })}
         var snapshot = Snapshot()
         snapshot.appendSections([0])
-        snapshot.appendItems(Reminder.sampleData.map { $0.id })
+        snapshot.appendItems(filteredReminders.map { $0.id })
         if !ids.isEmpty {
-            // reloadItems : 지정된 인덱스 경로에 있는 항목만 다시 로드합니다.
+            // reloadItems : 지정된 인덱스 경로에 있는 항목들만 다시 로드합니다.
             snapshot.reloadItems(ids)
         }
         dataSource.apply(snapshot)
@@ -73,6 +74,15 @@ extension ReminderListViewController {
         updateReminder(reminder)
         // 왜 배열?
         updateSnapshot(reloading: [id])
+    }
+    
+    func addReminder(_ reminder: Reminder) {
+        reminders.append(reminder)
+    }
+    
+    func deleteReminder(withId id: Reminder.ID) {
+        let index = reminders.indexOfReminder(withId: id)
+        reminders.remove(at: index)
     }
     
     private func doneButtonAccessibilityAction(for reminder: Reminder) -> UIAccessibilityCustomAction {
