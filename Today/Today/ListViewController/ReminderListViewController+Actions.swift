@@ -9,6 +9,10 @@ import UIKit
 
 extension ReminderListViewController {
     // @objc 특성은 Objective-C 코드에서 이 메서드를 사용할 수 있도록 한다
+    @objc func eventStoreChanged(_ notification: NSNotification) {
+        reminderStoreChanged()
+    }
+    
     @objc func didPressDoneButton(_ sender: ReminderDoneButton) {
         guard let id = sender.id else { return }
         completeReminder(with: id)
@@ -36,5 +40,6 @@ extension ReminderListViewController {
     @objc func didChangeListStyle(_ sender: UISegmentedControl) {
         listStyle = ReminderListStyle(rawValue: sender.selectedSegmentIndex) ?? .today
         updateSnapshot()
+        refreshBackground()
     }
 }
